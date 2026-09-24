@@ -41,6 +41,12 @@ To deploy: in Vercel, go to Add New > Project, import `Marrksidebottom/blackpool
 share is the project's `https://<project>.vercel.app` production URL. Check that Deployment Protection is off for
 production so colleagues can open it without a Vercel login.
 
+Deployment status (25 Sept 2026): not live yet. The build agent's Vercel access can't create production deployments
+in the World Heat team (403), and the CLI on the build machine isn't logged in. The name `blackpool-brawl` is already
+taken in the team, and an empty `world-heat-blackpool-brawl` project was created. A team Owner or Member needs to do one
+of these: run `npx vercel --prod` from a logged-in shell, or import the repo in the Vercel dashboard once this branch is
+merged to `main`. Then put the production URL here.
+
 Browser proof (title, pick, walking, hitting, drunk wobble, both gags, boss, both end screens, iPhone touch controls):
 see [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
