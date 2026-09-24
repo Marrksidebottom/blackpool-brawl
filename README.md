@@ -36,6 +36,14 @@ npm run build    # production build into dist/
 
 Plain Vite + canvas, no framework, no backend. Deployed on Vercel (`vercel.json`).
 
+To deploy: in Vercel, go to Add New > Project, import `Marrksidebottom/blackpool-brawl` and keep the settings from
+`vercel.json`. Every push to `main` then goes live. Or, from a logged-in shell, run `npx vercel --prod`. The phone link to
+share is the project's `https://<project>.vercel.app` production URL. Check that Deployment Protection is off for
+production so colleagues can open it without a Vercel login.
+
+Browser proof (title, pick, walking, hitting, drunk wobble, both gags, boss, both end screens, iPhone touch controls):
+see [docs/VERIFICATION.md](docs/VERIFICATION.md).
+
 For testing from the browser console: `BB.start(6)` starts as Mark, `BB.warp(3700)` jumps to the boss.
 
 ## Originality
