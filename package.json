@@ -1,0 +1,15 @@
+{
+  "name": "blackpool-brawl",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Blackpool Brawl - a daft side-scrolling beat 'em up starring the World Heat lads on a night out in Blackpool.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1"
+  }
+}
