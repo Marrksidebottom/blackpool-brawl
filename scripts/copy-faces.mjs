@@ -26,13 +26,14 @@ function sniff(buf) {
   return null;
 }
 
-/** Which lad a filename belongs to: first name at the start of a word, e.g. "Phil Clayton", "pic-phil2". */
+/** Which lad a filename belongs to: first name anywhere before the extension, any case, e.g. "Phil Clayton", "picAaron2". */
 function whoIs(file) {
   const base = file.slice(0, -extname(file).length).toLowerCase();
   let best = null, at = Infinity;
   for (const n of NAMES) {
-    const i = base.search(new RegExp(`(^|[^a-z])${n}`));
-    if (i >= 0 && i < at) [best, at] = [n, i];
+    const i = base.indexOf(n);
+    // earliest name wins; on a tie the longer name (never happens with today's names, but keeps it predictable)
+    if (i >= 0 && (i < at || (i === at && n.length > best.length))) [best, at] = [n, i];
   }
   return best;
 }

@@ -8,7 +8,7 @@ hen parties, bouncers and chip-thieving seagulls, then get past Big Dez, the hea
 ## Face photos (no code change needed)
 
 Upload a photo to the repo root (or to `public/faces/`) with the lad's first name anywhere in the filename, any case:
-`Aaron Clark.png`, `aaron.png`, `AARON.JPG` and `Aaron-Clark.jpeg` all work. The names are `jonathan`, `phil`, `spencer`, `jordan`,
+`Aaron Clark.png`, `aaron.png`, `AARON.JPG`, `Aaron-Clark.jpeg` and `picAaron2.png` all work. The names are `jonathan`, `phil`, `spencer`, `jordan`,
 `aaron`, `marcus` and `mark`. PNG, JPG/JPEG and WEBP work everywhere. **HEIC (the iPhone default) only works in Safari**, so export
 iPhone photos as JPG (or screenshot them). Anyone without a photo keeps the cartoon head.
 
@@ -52,7 +52,10 @@ share is the project's `https://<project>.vercel.app` production URL. Check that
 production so colleagues can open it without a Vercel login.
 
 Live at **https://blackpool-brawl.vercel.app** (Vercel project `blackpool-brawl`, World Heat team). It auto-deploys from
-`main` and runs `npm run build` there. The throwaway projects `world-heat-blackpool-brawl` and `wh-blackpool-brawl` from
+`main` and runs `npm run build` there (set in `vercel.json`: `buildCommand` `npm run build`, `outputDirectory` `dist`), so
+the photos are picked up on Vercel even when they're only ever uploaded through the GitHub website. To check what the live
+site serves: `node docs/proof/check-live.mjs` (plain Node), or `node docs/proof/verify.mjs https://blackpool-brawl.vercel.app/`
+for the title screen in a real browser (needs `npm i -D puppeteer`). The throwaway projects `world-heat-blackpool-brawl` and `wh-blackpool-brawl` from
 earlier attempts can be deleted.
 
 Browser proof (title, pick, walking, hitting, drunk wobble, both gags, boss, both end screens, iPhone touch controls):

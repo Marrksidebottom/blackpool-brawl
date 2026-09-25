@@ -11,21 +11,8 @@ const log = (...a) => console.log(...a);
 
 const browser = await puppeteer.launch({ headless: 'shell', args: ['--autoplay-policy=no-user-gesture-required'] });
 
-// make a fake "photo" (served via a fake faces/built/faces.json) so we can prove a photo is picked up with no code change
-const maker = await browser.newPage();
-const pngB64 = await maker.evaluate(() => {
-  const c = document.createElement('canvas');
-  c.width = 120; c.height = 140;
-  const g = c.getContext('2d');
-  g.fillStyle = '#88c'; g.fillRect(0, 0, 120, 140);
-  g.fillStyle = '#e8b890'; g.beginPath(); g.ellipse(60, 70, 40, 52, 0, 0, 7); g.fill();
-  g.fillStyle = '#222'; g.fillRect(30, 18, 60, 22);
-  g.fillStyle = '#000'; g.fillRect(40, 62, 12, 8); g.fillRect(68, 62, 12, 8);
-  g.fillStyle = '#a33'; g.fillRect(48, 96, 24, 6);
-  return c.toDataURL('image/png').split(',')[1];
-});
-await maker.close();
-
+// The real photos from the repo are used (whatever the build put in faces/built/) - nothing is faked.
+// Point it at the live site to check that too: node docs/proof/verify.mjs https://blackpool-brawl.vercel.app/
 async function open(opts = {}) {
   const page = await browser.newPage();
   page.on('pageerror', (e) => errors.push('pageerror: ' + e.message));
@@ -36,17 +23,17 @@ async function open(opts = {}) {
       userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
     });
   } else await page.setViewport({ width: 1200, height: 675 });
-  if (opts.fakeFace) {
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      if (req.url().endsWith('/faces/built/faces.json')) req.respond({ status: 200, contentType: 'application/json', body: '{"mark":"mark-test.png"}' });
-      else if (req.url().endsWith('/faces/built/mark-test.png')) req.respond({ status: 200, contentType: 'image/png', body: Buffer.from(pngB64, 'base64') });
-      else req.continue();
-    });
-  }
   await page.goto(URL, { waitUntil: 'networkidle0' });
   await sleep(600);
   return page;
+}
+
+// what the site really serves for the photos, and which lads the title screen draws with one
+const manifest = await fetch(new globalThis.URL('faces/built/faces.json', URL)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+log('faces.json:', manifest ? JSON.stringify(manifest) : 'MISSING');
+for (const [id, file] of Object.entries(manifest || {})) {
+  const r = await fetch(new globalThis.URL(`faces/built/${file}`, URL));
+  log(`  ${id}: ${r.status} ${r.headers.get('content-type')} ${(await r.arrayBuffer()).byteLength} bytes`);
 }
 const hold = async (page, key, ms) => {
   await page.keyboard.down(key);
@@ -62,7 +49,9 @@ const tap = async (page, key, n = 1, gap = 90) => {
 const G = (page, fn, arg) => page.evaluate(fn, arg);
 
 // ---------------------------------------------------------------- main run
-const page = await open({ fakeFace: true });
+const page = await open();
+await sleep(1500); // photos load after the first frame
+log('title screen photos:', JSON.stringify(await G(page, () => BB.photos)));
 await shot(page, '01-title');
 await tap(page, 'ArrowRight', 3); // pick someone else first...
 await tap(page, 'ArrowLeft', 3); // ...then back to Jonathan
