@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#120a2a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Blackpool Brawl - A World Heat Night Out</title>
+    <meta name="description" content="The World Heat lads hit the Golden Mile. Pints, punches, seagulls and one very big bouncer." />
+    <meta property="og:title" content="BLACKPOOL BRAWL - A World Heat Night Out" />
+    <meta property="og:description" content="Pints, punches, seagulls and one very big bouncer. Can the lads get in the club?" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="wrap">
+      <canvas id="screen" width="400" height="225"></canvas>
+    </div>
+    <div id="rotate">Turn your phone sideways for a bigger picture</div>
+    <div id="touch" aria-hidden="true">
+      <div id="dpad"><div id="stick"></div></div>
+      <div id="buttons">
+        <button data-action="special" class="btn small">SPECIAL</button>
+        <button data-action="jump" class="btn">JUMP</button>
+        <button data-action="kick" class="btn">KICK</button>
+        <button data-action="punch" class="btn big">PUNCH</button>
+      </div>
+      <button id="mute" data-action="mute" class="btn tiny">&#9835;</button>
+      <button id="pause" data-action="pause" class="btn tiny">II</button>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
