@@ -3,3 +3,4 @@ dist/
 .vercel/
 .verify/
 *.log
+public/faces/built/

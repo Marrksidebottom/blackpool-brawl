@@ -11,7 +11,7 @@ const log = (...a) => console.log(...a);
 
 const browser = await puppeteer.launch({ headless: 'shell', args: ['--autoplay-policy=no-user-gesture-required'] });
 
-// make a fake "photo" so we can prove public/faces/<name>.png is picked up with no code change
+// make a fake "photo" (served via a fake faces/built/faces.json) so we can prove a photo is picked up with no code change
 const maker = await browser.newPage();
 const pngB64 = await maker.evaluate(() => {
   const c = document.createElement('canvas');
@@ -39,7 +39,8 @@ async function open(opts = {}) {
   if (opts.fakeFace) {
     await page.setRequestInterception(true);
     page.on('request', (req) => {
-      if (req.url().endsWith('/faces/mark.png')) req.respond({ status: 200, contentType: 'image/png', body: Buffer.from(pngB64, 'base64') });
+      if (req.url().endsWith('/faces/built/faces.json')) req.respond({ status: 200, contentType: 'application/json', body: '{"mark":"mark-test.png"}' });
+      else if (req.url().endsWith('/faces/built/mark-test.png')) req.respond({ status: 200, contentType: 'image/png', body: Buffer.from(pngB64, 'base64') });
       else req.continue();
     });
   }

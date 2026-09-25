@@ -1,4 +1,5 @@
 // Procedural blocky pixel sprites. Everything is drawn with rectangles - no image assets.
+import { findFaceCrop } from './facecrop.js';
 
 let FLASH = null; // when set, every rect is drawn in this colour (hit flash)
 let C = null; // current context
@@ -27,36 +28,57 @@ export const HEAD_H = 12;
 const PHOTO_W = 14;
 const PHOTO_H = 16;
 
+const FACES = `${import.meta.env.BASE_URL}faces/`;
 const FACE_EXTS = ['png', 'jpg', 'jpeg', 'webp'];
+const WORK_MAX = 400; // big photos are shrunk to this before any pixel work
 
-/** Try public/faces/<id>.png (then .jpg/.jpeg/.webp) for each crew member; a hit replaces the cartoon head. */
+/**
+ * Load each lad's photo; a hit replaces the cartoon head, a miss (or a broken file) keeps the cartoon.
+ * The build lists photos in faces/built/faces.json (see scripts/copy-faces.mjs). Without that list
+ * (e.g. a bare static server) fall back to trying faces/<id>.png/.jpg/.jpeg/.webp.
+ */
 export function loadFaces(crew) {
-  for (const c of crew) {
-    const tryExt = (i) => {
-      if (i >= FACE_EXTS.length) return; // no photo yet - cartoon head it is
-      const img = new Image();
-      img.onload = () => {
-        try {
-          c.photo = pixelateFace(img);
-        } catch (e) {
-          console.warn('Could not use face photo for', c.id, e);
-        }
-      };
-      img.onerror = () => tryExt(i + 1);
-      img.src = `${import.meta.env.BASE_URL}faces/${c.id}.${FACE_EXTS[i]}`;
-    };
-    tryExt(0);
-  }
+  fetch(`${FACES}built/faces.json`, { cache: 'no-cache' })
+    .then((r) => (r.ok ? r.json() : null))
+    .catch(() => null)
+    .then((manifest) => {
+      for (const c of crew) {
+        const urls = manifest
+          ? (manifest[c.id] ? [`${FACES}built/${manifest[c.id]}`] : [])
+          : FACE_EXTS.map((ext) => `${FACES}${c.id}.${ext}`);
+        tryFace(c, urls, 0);
+      }
+    });
+}
+
+function tryFace(c, urls, i) {
+  if (i >= urls.length) return; // no photo - cartoon head it is
+  const img = new Image();
+  img.onload = () => {
+    try {
+      c.photo = pixelateFace(img);
+    } catch (e) {
+      console.warn('Could not use face photo for', c.id, e);
+    }
+  };
+  img.onerror = () => tryFace(c, urls, i + 1);
+  img.src = urls[i];
 }
 
 function pixelateFace(img) {
   const w = img.naturalWidth, h = img.naturalHeight;
   if (!w || !h) throw new Error('empty image');
-  const aspect = PHOTO_W / PHOTO_H;
-  let sw = Math.min(w, h * aspect);
-  let sh = sw / aspect;
-  const sx = (w - sw) / 2;
-  const sy = Math.max(0, (h - sh) * 0.3);
+  // shrink to a small working copy, then find the face (trims screenshot bars)
+  const k = Math.min(1, WORK_MAX / Math.max(w, h));
+  const work = document.createElement('canvas');
+  work.width = Math.max(1, Math.round(w * k));
+  work.height = Math.max(1, Math.round(h * k));
+  const wk = work.getContext('2d', { willReadFrequently: true });
+  wk.imageSmoothingEnabled = true;
+  wk.imageSmoothingQuality = 'high';
+  wk.drawImage(img, 0, 0, work.width, work.height);
+  const px = wk.getImageData(0, 0, work.width, work.height).data;
+  const box = findFaceCrop(px, work.width, work.height, PHOTO_W / PHOTO_H);
   // two-step downscale so the average colours survive
   const mid = document.createElement('canvas');
   mid.width = PHOTO_W * 4;
@@ -64,7 +86,7 @@ function pixelateFace(img) {
   const m = mid.getContext('2d');
   m.imageSmoothingEnabled = true;
   m.imageSmoothingQuality = 'high';
-  m.drawImage(img, sx, sy, sw, sh, 0, 0, mid.width, mid.height);
+  m.drawImage(work, box.x, box.y, box.w, box.h, 0, 0, mid.width, mid.height);
   const out = document.createElement('canvas');
   out.width = PHOTO_W;
   out.height = PHOTO_H;
