@@ -55,7 +55,8 @@ Live at **https://blackpool-brawl.vercel.app** (Vercel project `blackpool-brawl`
 `main` and runs `npm run build` there (set in `vercel.json`: `buildCommand` `npm run build`, `outputDirectory` `dist`), so
 the photos are picked up on Vercel even when they're only ever uploaded through the GitHub website. To check what the live
 site serves: `node docs/proof/check-live.mjs` (plain Node), or `node docs/proof/verify.mjs https://blackpool-brawl.vercel.app/`
-for the title screen in a real browser (needs `npm i -D puppeteer`). The throwaway projects `world-heat-blackpool-brawl` and `wh-blackpool-brawl` from
+for the title screen in a real browser (needs `puppeteer`, or `puppeteer-core` plus a local Chrome/Edge). What was checked, and why the photos were
+missing (five of the uploads on main were 2-byte stubs), is in `docs/proof/LIVE-CHECK.md`. The throwaway projects `world-heat-blackpool-brawl` and `wh-blackpool-brawl` from
 earlier attempts can be deleted.
 
 Browser proof (title, pick, walking, hitting, drunk wobble, both gags, boss, both end screens, iPhone touch controls):

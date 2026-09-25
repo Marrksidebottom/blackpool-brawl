@@ -4,3 +4,4 @@ dist/
 .verify/
 *.log
 public/faces/built/
+docs/proof/shots/

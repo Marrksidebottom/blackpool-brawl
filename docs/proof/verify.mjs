@@ -1,5 +1,19 @@
-﻿import puppeteer from 'puppeteer';
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
+
+// full puppeteer if installed, otherwise puppeteer-core driving a local Chrome/Edge (set CHROME_PATH to override)
+let puppeteer, executablePath;
+try {
+  puppeteer = (await import('puppeteer')).default;
+} catch {
+  puppeteer = (await import('puppeteer-core')).default;
+  executablePath = [
+    process.env.CHROME_PATH,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    '/usr/bin/google-chrome',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  ].find((p) => p && fs.existsSync(p));
+}
 
 const URL = process.argv[2] || 'http://localhost:4173/';
 const OUT = new globalThis.URL('./shots/', import.meta.url).pathname.replace(/^\/([A-Z]:)/i, '$1');
@@ -9,7 +23,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const errors = [];
 const log = (...a) => console.log(...a);
 
-const browser = await puppeteer.launch({ headless: 'shell', args: ['--autoplay-policy=no-user-gesture-required'] });
+const browser = await puppeteer.launch({ headless: executablePath ? true : 'shell', executablePath, args: ['--autoplay-policy=no-user-gesture-required'] });
 
 // The real photos from the repo are used (whatever the build put in faces/built/) - nothing is faked.
 // Point it at the live site to check that too: node docs/proof/verify.mjs https://blackpool-brawl.vercel.app/
