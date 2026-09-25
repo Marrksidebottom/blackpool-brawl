@@ -7,8 +7,8 @@ hen parties, bouncers and chip-thieving seagulls, then get past Big Dez, the hea
 
 ## Face photos (no code change needed)
 
-Put a photo at `public/faces/<firstname>.png` and it becomes that lad's pixelated head:
-`jonathan.png`, `phil.png`, `spencer.png`, `jordan.png`, `aaron.png`, `marcus.png`, `mark.png` (lower case, PNG, head-and-shoulders crop), then push to redeploy.
+Upload a photo named `<firstname>.png` (or `.jpg`) to the repo root or to `public/faces/`, and it becomes that lad's pixelated head:
+`jonathan`, `phil`, `spencer`, `jordan`, `aaron`, `marcus`, `mark` (head-and-shoulders crop). The build copies root photos into `public/faces/` for you; push to `main` and it redeploys.
 
 Heights, builds, hair, beards, glasses and shirt colours are in `src/crew.js` if anyone needs tweaking.
 
@@ -41,11 +41,17 @@ To deploy: in Vercel, go to Add New > Project, import `Marrksidebottom/blackpool
 share is the project's `https://<project>.vercel.app` production URL. Check that Deployment Protection is off for
 production so colleagues can open it without a Vercel login.
 
-Deployment status (25 Sept 2026): not live yet. The build agent's Vercel access can't create production deployments
-in the World Heat team (403), and the CLI on the build machine isn't logged in. The name `blackpool-brawl` is already
-taken in the team, and an empty `world-heat-blackpool-brawl` project was created. A team Owner or Member needs to do one
-of these: run `npx vercel --prod` from a logged-in shell, or import the repo in the Vercel dashboard once this branch is
-merged to `main`. Then put the production URL here.
+Deployment status (25 Sept 2026, morning): not live yet. The build agent's Vercel role in the World Heat team can create
+a new project once, but can't see or manage it afterwards. So it can't redeploy, deploy from GitHub (403) or turn off
+Vercel Authentication, and anything it publishes sits behind a Vercel login. The CLI on the build machine isn't logged in.
+Two throwaway projects from these attempts, `world-heat-blackpool-brawl` and `wh-blackpool-brawl`
+(which has a placeholder page), can be reused or deleted. A team Owner needs about two minutes:
+
+1. Merge this branch to `main`.
+2. In Vercel: Add New > Project > import `Marrksidebottom/blackpool-brawl`, then Deploy (the settings come from `vercel.json`).
+3. Go to Project > Settings > Deployment Protection, set Vercel Authentication to Disabled and save. Without this,
+   colleagues get a Vercel login page instead of the game.
+4. Share `https://<project>.vercel.app` and put it here.
 
 Browser proof (title, pick, walking, hitting, drunk wobble, both gags, boss, both end screens, iPhone touch controls):
 see [docs/VERIFICATION.md](docs/VERIFICATION.md).

@@ -27,19 +27,25 @@ export const HEAD_H = 12;
 const PHOTO_W = 14;
 const PHOTO_H = 16;
 
-/** Try public/faces/<id>.png for each crew member; a hit replaces the cartoon head. */
+const FACE_EXTS = ['png', 'jpg', 'jpeg', 'webp'];
+
+/** Try public/faces/<id>.png (then .jpg/.jpeg/.webp) for each crew member; a hit replaces the cartoon head. */
 export function loadFaces(crew) {
   for (const c of crew) {
-    const img = new Image();
-    img.onload = () => {
-      try {
-        c.photo = pixelateFace(img);
-      } catch (e) {
-        console.warn('Could not use face photo for', c.id, e);
-      }
+    const tryExt = (i) => {
+      if (i >= FACE_EXTS.length) return; // no photo yet - cartoon head it is
+      const img = new Image();
+      img.onload = () => {
+        try {
+          c.photo = pixelateFace(img);
+        } catch (e) {
+          console.warn('Could not use face photo for', c.id, e);
+        }
+      };
+      img.onerror = () => tryExt(i + 1);
+      img.src = `${import.meta.env.BASE_URL}faces/${c.id}.${FACE_EXTS[i]}`;
     };
-    img.onerror = () => {}; // no photo yet - cartoon head it is
-    img.src = `${import.meta.env.BASE_URL}faces/${c.id}.png`;
+    tryExt(0);
   }
 }
 
