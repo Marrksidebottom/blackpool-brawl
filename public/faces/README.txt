@@ -1,11 +1,10 @@
 Drop face photos in this folder (or in the repo root) to replace the cartoon heads - no code change needed.
 
-Exact filenames (lower case, PNG or JPG):
-  jonathan.png  phil.png  spencer.png  jordan.png  aaron.png  marcus.png  mark.png
-  (jonathan.jpg etc. also work; if both exist the .png wins)
+Any filename containing the first name works, any case:
+  Aaron Clark.png  aaron.png  AARON.JPG  Aaron-Clark.jpeg
+Names: jonathan  phil  spencer  jordan  aaron  marcus  mark
+Formats: PNG, JPG/JPEG, WEBP. HEIC (iPhone default) only works in Safari - export as JPG instead.
 
-Photos in the repo root are copied here automatically by `npm run build`.
-
-Tips: a head-and-shoulders crop, face roughly centred, square-ish, any size.
-The game crops it to the head box and pixelates it to match the art.
-Redeploy (push to main) after adding photos.
+The build (scripts/copy-faces.mjs) shrinks them into built/ (generated, not committed) with a faces.json list.
+The game trims black screenshot bars and crops the upper-middle, but a square crop of just the face works best.
+Push to main after adding photos and Vercel redeploys.

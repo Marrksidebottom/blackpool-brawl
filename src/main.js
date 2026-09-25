@@ -274,6 +274,10 @@ window.BB = {
   get mode() {
     return mode;
   },
+  // which lads are showing a photo instead of the cartoon head, e.g. ['aaron', 'spencer']
+  get photos() {
+    return CREW.filter((c) => c.photo).map((c) => c.id);
+  },
   start(i = sel) {
     sel = i;
     startGame();

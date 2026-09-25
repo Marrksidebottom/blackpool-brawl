@@ -3,7 +3,7 @@
 //   hair       colour, hairStyle: short | spiky | quiff | curly | receding | buzz | bald | side
 //   beard      null | 'stubble' | 'full' | 'goatee' (beardColour defaults to hair)
 //   glasses    false | true
-// A photo at public/faces/<id>.png (or .jpg) automatically replaces the cartoon head.
+// A photo with the first name in its filename (repo root or public/faces/) automatically replaces the cartoon head.
 export const CREW = [
   {
     id: 'jonathan', name: 'Jonathan', full: 'Jonathan Greenwood',
